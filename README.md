@@ -6,6 +6,19 @@
 
 ---
 
+---
+
+## 👥 Project Team
+
+| Name | Role |
+|---|---|
+| Rutuza Gondale | Backend & Database Developer |
+| Pavankumar Borade | Software Tester |
+| Rishikesh Pawar | Project Manager |
+| Sandesh Gawai | Frontend Developer |
+
+---
+
 ## 📌 Project Overview
 This project is an end-to-end, general-purpose, text-based interview practice and evaluation system engineered according to the official MCA Research Project Requirements Document (PRD).
 
