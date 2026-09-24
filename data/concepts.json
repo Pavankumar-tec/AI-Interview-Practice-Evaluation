@@ -1,0 +1,974 @@
+[
+  {
+    "id": "indexes",
+    "title": "Database indexes",
+    "explain": "Why can an index make a database lookup faster?",
+    "defend": "Why should we not index every column?",
+    "transfer": "A log table receives frequent inserts and rare searches by timestamp. What would you measure before adding a timestamp index?",
+    "lesson": "An index is an additional lookup structure. It can reduce rows examined for suitable queries, but needs storage and maintenance during writes. The planner may prefer a scan when many rows match. Compare representative query plans and read/write timings before choosing an index.",
+    "keywords": [
+      "lookup",
+      "storage",
+      "writes",
+      "query"
+    ],
+    "activity": "Draw the path of one lookup and one insert with an index.",
+    "sources": [
+      "https://www.postgresql.org/docs/current/indexes-intro.html"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Why can an index make a database lookup faster? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Why should we not index every column? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: A log table receives frequent inserts and rare searches by timestamp. What would you measure before adding a timestamp index? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "transactions",
+    "title": "Transactions",
+    "explain": "What does a transaction protect when transferring money between accounts?",
+    "defend": "What can go wrong if the debit succeeds but the credit fails?",
+    "transfer": "Two customers try to buy the last ticket. Explain why a transaction alone may not prevent overselling and what additional control you would consider.",
+    "lesson": "Atomicity groups operations so they commit together or are rolled back. Isolation governs concurrent transactions; guarantees depend on the isolation level. Use appropriate locking, constraints, or serializable execution and retry handling for concurrent invariants. A transaction does not automatically remove every race.",
+    "keywords": [
+      "atomicity",
+      "rollback",
+      "isolation",
+      "concurrent"
+    ],
+    "activity": "Write the invariant that must hold after a transfer.",
+    "sources": [
+      "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: What does a transaction protect when transferring money between accounts? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: What can go wrong if the debit succeeds but the credit fails? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Two customers try to buy the last ticket. Explain why a transaction alone may not prevent overselling and what additional control you would consider. Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "normalization",
+    "title": "Data normalization",
+    "explain": "Why separate customer details from order records?",
+    "defend": "What goes wrong when a customer address is copied into every order and updated inconsistently?",
+    "transfer": "A receipt must preserve the address at purchase time. Would you always replace that address with a link to the current customer address? Explain.",
+    "lesson": "Normalization reduces redundant facts and update anomalies by modeling dependencies. An order can reference a customer. Historical snapshots, such as the address used on a receipt, may intentionally preserve a different fact from the current address. Model the meaning of the data before removing repetition.",
+    "keywords": [
+      "redundancy",
+      "update",
+      "customer",
+      "historical"
+    ],
+    "activity": "Separate current customer facts from purchase-time facts.",
+    "sources": [
+      "https://learn.microsoft.com/en-us/office/troubleshoot/access/database-normalization-description"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Why separate customer details from order records? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: What goes wrong when a customer address is copied into every order and updated inconsistently? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: A receipt must preserve the address at purchase time. Would you always replace that address with a link to the current customer address? Explain. Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "http",
+    "title": "HTTP and transport security",
+    "explain": "How do GET and POST differ in intended use?",
+    "defend": "Does putting a password in a POST body encrypt it?",
+    "transfer": "A login form uses POST over plain HTTP. What would you change and why?",
+    "lesson": "GET requests a representation and has safe semantics. POST requests resource-specific processing and is not generally idempotent. Moving data into a body does not encrypt it. HTTPS protects data in transit with TLS; logs and application storage still require care.",
+    "keywords": [
+      "GET",
+      "POST",
+      "HTTPS",
+      "encrypt"
+    ],
+    "activity": "Explain the difference between message location and encryption.",
+    "sources": [
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: How do GET and POST differ in intended use? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Does putting a password in a POST body encrypt it? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: A login form uses POST over plain HTTP. What would you change and why? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "passwords",
+    "title": "Password storage",
+    "explain": "Why should an application avoid storing plaintext passwords?",
+    "defend": "Why is a fast general-purpose hash insufficient for password storage?",
+    "transfer": "An attacker obtains a user database containing password hashes. How do unique salts and an appropriate work factor change the attack?",
+    "lesson": "Use a dedicated password hashing scheme with a unique salt and suitable work factor. A salt prevents identical passwords from sharing the same stored hash and defeats reusable precomputed tables. Cost makes guessing more expensive; it does not make weak passwords unguessable. Do not invent a password hashing scheme.",
+    "keywords": [
+      "salt",
+      "hash",
+      "cost",
+      "guess"
+    ],
+    "activity": "Contrast encryption, a fast hash, and password hashing.",
+    "sources": [
+      "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Why should an application avoid storing plaintext passwords? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Why is a fast general-purpose hash insufficient for password storage? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: An attacker obtains a user database containing password hashes. How do unique salts and an appropriate work factor change the attack? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "cache",
+    "title": "Caching and freshness",
+    "explain": "How can a cache reduce response time?",
+    "defend": "What happens when the original data changes but the cache does not?",
+    "transfer": "Would you use the same cache policy for a product photo and available stock during checkout? Explain.",
+    "lesson": "A cache reuses stored responses or computed data. It can reduce latency and work but introduces freshness and invalidation choices. Expiration limits how long data can be reused under a policy. Data whose correctness is critical may require validation or an authoritative read rather than relying on stale cache entries.",
+    "keywords": [
+      "latency",
+      "stale",
+      "invalidate",
+      "freshness"
+    ],
+    "activity": "Choose a freshness requirement for two different data types.",
+    "sources": [
+      "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: How can a cache reduce response time? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: What happens when the original data changes but the cache does not? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Would you use the same cache policy for a product photo and available stock during checkout? Explain. Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "complexity",
+    "title": "Algorithmic complexity",
+    "explain": "What does linear time mean as input size grows?",
+    "defend": "Can an O(n) algorithm be slower than an O(n log n) algorithm on a small input?",
+    "transfer": "A list is searched once versus searched thousands of times. When might preprocessing into a lookup structure pay off?",
+    "lesson": "Asymptotic complexity describes growth rather than exact runtime. Constants, input size, and implementation affect measured performance. Preprocessing trades setup time and memory for later query speed. Assess the workload and measure representative inputs; hash-based lookup also has assumptions and worst cases.",
+    "keywords": [
+      "growth",
+      "input",
+      "memory",
+      "preprocessing"
+    ],
+    "activity": "List setup cost and per-query cost separately.",
+    "sources": [
+      "https://wiki.python.org/moin/TimeComplexity"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: What does linear time mean as input size grows? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Can an O(n) algorithm be slower than an O(n log n) algorithm on a small input? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: A list is searched once versus searched thousands of times. When might preprocessing into a lookup structure pay off? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "queues",
+    "title": "Stacks and queues",
+    "explain": "Explain FIFO and LIFO with an example each.",
+    "defend": "Why does undo commonly use stack-like behavior?",
+    "transfer": "A task queue has several workers. Does FIFO dequeue order guarantee tasks finish in FIFO order?",
+    "lesson": "A queue removes items in first-in-first-out order; a stack removes the newest item first. Ordering of removal does not guarantee ordering of completion when multiple workers run for different durations. Distinguish data structure semantics from scheduling and completion behavior.",
+    "keywords": [
+      "FIFO",
+      "LIFO",
+      "workers",
+      "order"
+    ],
+    "activity": "Sketch three tasks with different running times and two workers.",
+    "sources": [
+      "https://docs.python.org/3/tutorial/datastructures.html"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Explain FIFO and LIFO with an example each. Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Why does undo commonly use stack-like behavior? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: A task queue has several workers. Does FIFO dequeue order guarantee tasks finish in FIFO order? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "async",
+    "title": "Concurrency and parallelism",
+    "explain": "How do concurrency and parallelism differ?",
+    "defend": "Does using async automatically make CPU-heavy calculations run in parallel?",
+    "transfer": "A server waits for many network responses but also compresses large files. How would you reason about handling those two workloads?",
+    "lesson": "Concurrency allows tasks to make progress over overlapping periods; parallelism executes work simultaneously. Async I/O can overlap waiting but blocking CPU work can stall an event loop. Depending on the runtime, use suitable workers or processes for CPU-heavy work and measure overhead.",
+    "keywords": [
+      "concurrency",
+      "parallelism",
+      "I/O",
+      "CPU"
+    ],
+    "activity": "Mark each operation as waiting or computing.",
+    "sources": [
+      "https://docs.python.org/3/library/asyncio.html"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: How do concurrency and parallelism differ? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Does using async automatically make CPU-heavy calculations run in parallel? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: A server waits for many network responses but also compresses large files. How would you reason about handling those two workloads? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "testing",
+    "title": "Testing and edge cases",
+    "explain": "How does a unit test help you trust a function?",
+    "defend": "Does passing ten examples prove a function is correct for every input?",
+    "transfer": "A function works for normal prices but fails on zero and negative values. How would you choose tests and specify expected behavior?",
+    "lesson": "Tests check specified behavior for selected inputs and conditions. Passing tests is evidence, not a universal proof. Include boundaries, invalid inputs, and meaningful failure cases. Define intended behavior before asserting it; use broader techniques when appropriate.",
+    "keywords": [
+      "boundary",
+      "input",
+      "expected",
+      "failure"
+    ],
+    "activity": "Write three boundary cases with expected results.",
+    "sources": [
+      "https://docs.python.org/3/library/unittest.html"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: How does a unit test help you trust a function? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Does passing ten examples prove a function is correct for every input? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: A function works for normal prices but fails on zero and negative values. How would you choose tests and specify expected behavior? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "git",
+    "title": "Git and collaboration",
+    "explain": "What is the difference between a commit and a push?",
+    "defend": "Why can two valid edits still cause a merge conflict?",
+    "transfer": "Two teammates change the same validation rule differently. How should you resolve the conflict beyond removing conflict markers?",
+    "lesson": "A commit records a local snapshot with history; push transfers commits to a remote. Conflicts require deciding the correct combined behavior. Read both changes and the intended requirement, then test the resolution. Do not blindly accept one side merely to make the merge complete.",
+    "keywords": [
+      "commit",
+      "remote",
+      "conflict",
+      "test"
+    ],
+    "activity": "Describe which teammate should approve a changed requirement.",
+    "sources": [
+      "https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: What is the difference between a commit and a push? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Why can two valid edits still cause a merge conflict? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Two teammates change the same validation rule differently. How should you resolve the conflict beyond removing conflict markers? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  },
+  {
+    "id": "authorization",
+    "title": "Authentication and authorization",
+    "explain": "How does authentication differ from authorization?",
+    "defend": "Does being logged in mean a user can access every record?",
+    "transfer": "A user changes an invoice ID in the URL and sees another customer\u2019s invoice. Where should the access check happen?",
+    "lesson": "Authentication establishes identity; authorization decides permitted actions on resources. Enforce access checks on the server for each relevant resource and request. Hiding a button or using unpredictable IDs is not a substitute for access control. Check ownership or policy before returning data.",
+    "keywords": [
+      "identity",
+      "permission",
+      "server",
+      "resource"
+    ],
+    "activity": "Write an access rule for a customer invoice.",
+    "sources": [
+      "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html"
+    ],
+    "rubrics": {
+      "explain": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: How does authentication differ from authorization? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "defend": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: Does being logged in mean a user can access every record? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ],
+      "transfer": [
+        {
+          "id": "correctness",
+          "name": "Correctness",
+          "description": "Accurately answers: A user changes an invoice ID in the URL and sees another customer\u2019s invoice. Where should the access check happen? Avoids misconceptions contradicted by the concept reference.",
+          "max_score": 4
+        },
+        {
+          "id": "reasoning",
+          "name": "Reasoning",
+          "description": "Explains why the mechanism or trade-off follows, rather than only naming terms.",
+          "max_score": 4
+        },
+        {
+          "id": "application",
+          "name": "Concrete application",
+          "description": "Uses an appropriate example or applies reasoning to the stated situation.",
+          "max_score": 2
+        }
+      ]
+    },
+    "status": "draft \u2014 requires expert review"
+  }
+]

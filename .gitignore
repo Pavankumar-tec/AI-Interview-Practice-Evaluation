@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite*
+.env
+.venv/
+data/private/
+results/
+playwright-report/
